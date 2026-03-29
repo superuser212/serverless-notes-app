@@ -9,7 +9,7 @@ interface Note {
   title: string;
   content: string;
   fileUrl?: string; 
-  createdAt?: string; // ADDED: Now we tell React to expect a timestamp from the database
+  createdAt?: string;
 }
 
 const API_BASE = 'https://wdek58lq0j.execute-api.us-east-2.amazonaws.com';
@@ -17,7 +17,7 @@ const API_BASE = 'https://wdek58lq0j.execute-api.us-east-2.amazonaws.com';
 // ---------------------------------------------------------
 // Helper Functions
 // ---------------------------------------------------------
-// ADDED: A small helper to turn raw database timestamps (2026-03-27T...) into readable dates (Mar 27, 2026, 6:54 PM)
+// A small helper to turn raw database timestamps into readable dates
 const formatTimestamp = (dateString?: string) => {
   if (!dateString) return 'Unknown date';
   const date = new Date(dateString);
@@ -28,7 +28,7 @@ const formatTimestamp = (dateString?: string) => {
 };
 
 // ---------------------------------------------------------
-// API Service Functions (Unchanged)
+// API Service Functions
 // ---------------------------------------------------------
 
 const fetchNotesAPI = async (): Promise<Note[]> => {
@@ -96,7 +96,7 @@ export default function App() {
     try {
       const data = await fetchNotesAPI();
       
-      // ADDED UI TWEAK: Sort notes so the newest ones appear at the top!
+      //Sort notes so the newest ones appear at the top!
       const sortedData = data.sort((a, b) => {
         if (!a.createdAt || !b.createdAt) return 0;
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
@@ -105,7 +105,7 @@ export default function App() {
       setNotes(sortedData || []);
       setError('');
     } catch (err) {
-      setError('Could not connect to the database. Please try again later.'); // Better error copy
+      setError('Could not connect to the database. Please try again later.'); 
     }
   };
 
@@ -118,7 +118,7 @@ export default function App() {
   const handleCreateNote = async (e: FormEvent) => {
     e.preventDefault();
     
-    // IMPROVED ERROR HANDLING: Tell the user exactly what they missed instead of silently failing
+    // Tell the user exactly what they missed instead of silently failing
     if (!title.trim()) {
       setError('Oops! Your note needs a title.');
       return;
@@ -150,7 +150,7 @@ export default function App() {
 
       await loadNotes(); 
     } catch (err: any) {
-      // IMPROVED ERROR HANDLING: Print the actual error to the console for you, but show a nice message to the user
+      // Print the actual error to the console but show a nice message to the user
       console.error("Creation Error:", err);
       setError('Something went wrong while saving your note. Check your connection.');
     } finally {
@@ -173,10 +173,10 @@ export default function App() {
   };
 
   return (
-    // UI TWEAK: Increased max-width slightly so PDFs and images have more breathing room
+    // Increased the max width slightly so PDFs and images have more breathing room
     <div style={{ maxWidth: '700px', margin: '40px auto', fontFamily: 'system-ui, -apple-system, sans-serif', padding: '0 20px', color: '#202124' }}>
       
-      {/* UI TWEAK: Cleaner header spacing */}
+      {/* Cleaner header spacing */}
       <h1 style={{ borderBottom: '2px solid #e8eaed', paddingBottom: '16px', marginBottom: '32px' }}>
         Serverless Notes
       </h1>
@@ -187,12 +187,10 @@ export default function App() {
         </div>
       )}
 
-      {/* UI TWEAK: Softer background color, cleaner borders */}
       <section style={{ marginBottom: '48px', background: '#f8f9fa', padding: '24px', borderRadius: '12px', border: '1px solid #000000' }}>
         <h2 style={{ marginTop: 0, fontSize: '1.25rem', marginBottom: '20px' }}>Create a New Note</h2>
         <form onSubmit={handleCreateNote} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           
-          {/* UI TWEAK: Better input padding and subtle borders */}
           <input 
             type="text" 
             placeholder="Note Title" 
@@ -246,7 +244,6 @@ export default function App() {
             const isPdf = note.fileUrl?.toLowerCase().includes('.pdf');
 
             return (
-              // UI TWEAK: Cleaner card design with softer shadows
               <div key={noteId} style={{ border: '1px solid #e8eaed', padding: '24px', borderRadius: '12px', background: 'white', boxShadow: '0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15)' }}>
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -260,7 +257,6 @@ export default function App() {
                     )}
                   </div>
                   
-                  {/* UI TWEAK: Subtler delete button */}
                   <button 
                     onClick={() => handleDeleteNote(noteId)} 
                     disabled={loading} 
